@@ -1,0 +1,21 @@
+.error { 
+  border-color: red;
+  color:red;
+  display: inline-block !important;
+  padding: 2px;
+}
+
+.success { 
+  border-color: green;
+  color:green; 
+}
+
+.start {
+  border-color: lightblue;
+  color:lightblue;
+}
+
+div {
+  padding-top: 10px;
+  padding-bottom: 10px;
+} 

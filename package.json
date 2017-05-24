@@ -17,8 +17,7 @@
     "@types/react": "^15.0.23",
     "@types/react-dom": "^0.14.23",
     "@types/react-redux": "^4.4.40",
-    "@types/react-router": "^4.0.4",
-    "@types/redux-actions": "^1.2.4",
+    "@types/react-router": "^4.0.4", 
     "@types/webpack": "^2.2.15",
     "@types/webpack-env": "^1.13.0",
     "awesome-typescript-loader": "^3.1.2",
@@ -49,8 +48,6 @@
     "react-dom": "^15.5.4",
     "react-number-format": "^1.2.1",
     "react-redux": "^5.0.4",
-    "react-router": "^4.1.1",
-    "redux": "^3.6.0",
-    "redux-actions": "^2.0.2"
+    "react-router": "^4.1.1" 
   }
 }

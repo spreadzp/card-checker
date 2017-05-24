@@ -3,6 +3,5 @@
 export interface RootState {
 }
 
-export default combineReducers<RootState>({
- 
+export default combineReducers<RootState>({ 
 });

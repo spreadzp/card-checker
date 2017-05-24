@@ -6,7 +6,6 @@ export namespace Footer {
   }
 
   export interface State {
-    /* empty */
   }
 }
 

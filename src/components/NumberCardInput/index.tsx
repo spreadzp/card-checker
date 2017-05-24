@@ -1,7 +1,7 @@
 import * as React from 'react';
-import * as classNames from 'classnames';
+import { Button, Collapse, Well } from 'react-bootstrap';
 import * as style from './style.css';
-import { Button, Collapse, Well, FormGroup } from 'react-bootstrap';
+import { Helper } from './helper';
 let NumberFormat = require('react-number-format');
 
 export namespace NumberCardInput {
@@ -17,6 +17,7 @@ export namespace NumberCardInput {
     isExpiredDate: boolean;
     isTouchNumberField: boolean;
     isTouchDateField: boolean;
+    helper: Helper
   }
 }
 
@@ -32,7 +33,8 @@ export class NumberCardInput extends React.Component<NumberCardInput.Props, Numb
       isValidExpireDate: false,
       isExpiredDate: false,
       isTouchNumberField: false,
-      isTouchDateField: false
+      isTouchDateField: false,
+      helper: new Helper()
 
     };
     this.handleBlur = this.handleBlur.bind(this);
@@ -49,45 +51,11 @@ export class NumberCardInput extends React.Component<NumberCardInput.Props, Numb
   handleChange(e) {
     this.setState({ isTouchNumberField: true });
     this.setState({ numberCard: e.target.value });
-    this.validationNumber(e.target.value);
+    this.setState({ isValidNumberCard: this.state.helper.validationNumber(e.target.value) });
   }
 
-  validationNumber(numberFromInput) {
-    numberFromInput = numberFromInput.replace(/\s/g, "");
-    let reg = /_/gi;
-    let numberWithoutSpace = numberFromInput.replace(reg, '');
-
-    if ((numberWithoutSpace).length > 15) {
-      this.setState({ isValidNumberCard: this.validLunhCard(this.state.numberCard) });
-    } else {
-      this.setState({ isValidNumberCard: false });
-    }
-  }
-
-  validLunhCard(value) {
-    // accept only digits, dashes or spaces
-    if (/[^0-9-\s]+/.test(value)) return false;
-
-    // The Luhn Algorithm.
-    let nCheck = 0, nDigit = 0, bEven = false;
-    value = value.replace(/\D/g, "");
-
-    for (let n = value.length - 1; n >= 0; n--) {
-      let cDigit = value.charAt(n),
-        nDigit = parseInt(cDigit, 10);
-
-      if (bEven) {
-        if ((nDigit *= 2) > 9) nDigit -= 9;
-      }
-
-      nCheck += nDigit;
-      bEven = !bEven;
-    }
-
-    return (nCheck % 10) == 0;
-  }
   handleBlur(e) {
-    this.validationNumber(e.target.value);
+    this.state.helper.validationNumber(e.target.value);
     if (!this.state.isValidNumberCard) {
       this.setState({ isErrorNumberField: true });
     } else {
@@ -101,17 +69,6 @@ export class NumberCardInput extends React.Component<NumberCardInput.Props, Numb
     } else {
       this.setState({ isExpiredDate: false });
     }
-  }
-
-  formatExpiryChange(val) {
-    if (val && Number(val[0]) > 1) {
-      val = '0' + val;
-    }
-    if (val && val.length > 1 && Number(val[0] + val[1]) > 12) {
-      val = '12' + val.substring(2, val.length);
-    }
-    val = val.substring(0, 2) + (val.length > 2 ? '/' + val.substring(2, 4) : '');
-    return val;
   }
 
   handleExpiryChange(e) {
@@ -147,7 +104,7 @@ export class NumberCardInput extends React.Component<NumberCardInput.Props, Numb
 
   render() {
     return (
-      <form onSubmit={this.handleSubmit} >
+      <form onSubmit={ this.handleSubmit } >
         <div>
           <p>Number credit card</p>
           <NumberFormat
@@ -155,17 +112,17 @@ export class NumberCardInput extends React.Component<NumberCardInput.Props, Numb
               (this.state.isTouchNumberField)
                 ? this.getStyleNumber()
                 : style.start}
-            value={this.state.numberCard}
-            onBlur={this.handleBlur}
-            onChange={this.handleChange}
+            value={ this.state.numberCard }
+            onBlur={ this.handleBlur }
+            onChange={ this.handleChange }
             format="#### #### #### ####"
             mask="_" />
           <Collapse in={
-            !this.state.isValidNumberCard && this.state.isErrorNumberField}
+            !this.state.isValidNumberCard && this.state.isErrorNumberField }
             className={
               (!this.state.isValidNumberCard && this.state.isErrorNumberField)
                 ? this.getStyleNumber()
-                : style.start}>
+                : style.start }>
             <Well>
               Invalid number card!
             </Well>
@@ -179,11 +136,11 @@ export class NumberCardInput extends React.Component<NumberCardInput.Props, Numb
               (this.state.isTouchDateField)
                 ? this.getStyleDate()
                 : style.start}
-            onBlur={this.handleBlurExpireDate}
-            onChange={this.handleExpiryChange}
-            format={this.formatExpiryChange} />
+            onBlur={ this.handleBlurExpireDate }
+            onChange={ this.handleExpiryChange }
+            format={ this.state.helper.formatExpiryChange } />
           <Collapse
-            in={this.state.isExpiredDate}
+            in={ this.state.isExpiredDate}
             className={
               (this.state.isExpiredDate)
                 ? this.getStyleDate()
@@ -199,7 +156,7 @@ export class NumberCardInput extends React.Component<NumberCardInput.Props, Numb
           disabled={
             (this.state.isValidNumberCard && !this.state.isExpiredDate)
               ? false
-              : true} >
+              : true } >
           Validate card
          </Button>
       </form>
